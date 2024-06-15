@@ -53,6 +53,50 @@ def get_price_from_uniswap():
    print(data)
    return float(data['data']['pair']['token0Price']), float(data['data']['pair']['token1Price'])
 
+def get_price_from_sushiswap():
+   query = """
+{
+ pair(id: "0xc3d03e4f041fd4cd388c549ee2a29a9e5075882f"){
+     token0 {
+       id
+       symbol
+       name
+       derivedETH
+     }
+     token1 {
+       id
+       symbol
+       name
+       derivedETH
+     }
+     reserve0
+     reserve1
+     reserveUSD
+     trackedReserveETH
+     token0Price
+     token1Price
+     volumeUSD
+     txCount
+ }
+}
+"""
+   response = requests.post(SUSHI_SWAP_URL, json={'query':query})
+   data = response.json()
+   print(data)
+   return float(data['data']['pair']['token0Price']), float(data['data']['pair']['token1Price'])
+
+def arbitrage():
+   while True:
+      uniswap_price_a, uniswap_price_b = get_price_from_uniswap()
+      sushiswap_price_a, sushiswap_price_b = get_price_from_sushiswap()
+
+      if uniswap_price_a < sushiswap_price_a:
+         print(f"Buy on Uniswap, sell on Sushiswap: {uniswap_price_a} < {sushiswap_price_a}")
+            # 取引を実行するコードをここに追加
+      elif sushiswap_price_a < uniswap_price_a:
+         print(f"Buy on Sushiswap, sell on Uniswap: {sushiswap_price_a} < {uniswap_price_a}")
+            # 取引を実行するコードをここに追加
+      time.sleep(10)  # 10秒ごとにチェック
 
 if __name__ == "__main__":
-   get_price_from_uniswap()
+  arbitrage()
