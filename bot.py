@@ -1,13 +1,21 @@
+import os
 import time
 import requests
 from web3 import Web3
+from dotenv import load_dotenv
+
+# .envファイルから環境変数を読み込む
+load_dotenv()
+
+# 環境変数からAPIキーを取得
+INFURA_API_KEY = os.getenv("INFURA_API_KEY")
 
 # UniswapとSushiswapのエンドポイント
 UNISWAP_URL = "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2"
 SUSHI_SWAP_URL = "https://api.thegraph.com/subgraphs/name/sushiswap/exchange"
 
 # Web3インスタンスの設定（EthereumのRPC URLを使用）
-web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f762421fa9634dffbf00b2a275e15b77'))
+web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/${INFURA_API_KEY}'))
 
 # 取引ペアの設定
 TOKEN_A = "0x6b175474e89094c44da98b954eedeac495271d0f"  # DAI
